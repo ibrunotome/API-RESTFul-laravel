@@ -12,9 +12,19 @@ class BanksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $result = \App\Bank::paginate();
+		$limit = $request->all()['limit'] ?? 15;
+
+		$order = $request->all()['order'] ?? null;
+
+		if (!empty($oder)) {
+			$order = explode(',', $order);
+		}
+
+		$order[0] = $order[0] ?? 'id';
+		$order[1] = $order[1] ?? 'asc';
+        $result = \App\Bank::orderBy($order[0], $order[1])->paginate($limit);
 
 		return response()->json($result);
     }
