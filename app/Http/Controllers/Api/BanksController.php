@@ -24,7 +24,26 @@ class BanksController extends Controller
 
 		$order[0] = $order[0] ?? 'id';
 		$order[1] = $order[1] ?? 'asc';
-        $result = \App\Bank::orderBy($order[0], $order[1])->paginate($limit);
+
+		$where = $request->all()['where'] ?? [];
+
+		$like = $request->all()['like'] ?? [];
+
+		if ($like) {
+			$like = explode(',', $like);
+			$like[1] = '%' . $like[1] . '%';
+		}
+
+        $result = \App\Bank::orderBy($order[0], $order[1])
+		->where(function($query) use ($like) {
+			if ($like) {
+				return $query->where($like[0], 'like', $like[1]);
+			}
+
+			return $query;
+		})
+		->where($where)
+		->paginate($limit);
 
 		return response()->json($result);
     }
