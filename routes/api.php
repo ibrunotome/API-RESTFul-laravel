@@ -18,3 +18,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 Route::resource('/banks', 'Api\BanksController');
+Route::resource('/accounts', 'Api\AccountsController');
